@@ -9,10 +9,26 @@
 */
 package packet;
 
+import java.io.IOException;
+import java.util.List;
+
 public class Simulation {
 
 	public static void main(String[] args) {
-		System.out.println("deneme");
+			
+		try {
+            FileReader reader = new FileReader();//create Filereader Object
+            List<String> kisilerLines = reader.readLinesFromResource("Kisiler.txt");
+            
+            System.out.println("----- Kisiler.txt -----");
+            for (String line : kisilerLines) {
+                System.out.println(line); //  parsing işlemleri
+            }
+            
+        }catch (IOException e) {
+            System.err.println("Hata: " + e.getMessage());
+        	}
+		
 	}
 
 }
