@@ -11,24 +11,70 @@ package packet;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Scanner;
 
 public class Simulation {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException, InterruptedException {
 			
-		try {
-            FileReader reader = new FileReader();//create Filereader Object
-            List<String> kisilerLines = reader.readLinesFromResource("Kisiler.txt");
-            
-            System.out.println("----- Kisiler.txt -----");
-            for (String line : kisilerLines) {
-                System.out.println(line); //  parsing işlemleri
-            }
-            
-        }catch (IOException e) {
-            System.err.println("Hata: " + e.getMessage());
-        	}
+		 	FileReader reader = new FileReader();
+	        List<Planet> planets = reader.readPlanets("Gezegenler.txt");
+	        Scanner scanner = new Scanner(System.in);
+		
+	        while (true) {
+	            clearConsole(); // Ekranı temizle
+	            
+	            // Gezegenleri 4'lü gruplar halinde göster
+	            for (int i = 0; i < planets.size(); i += 4) {
+	                printPlanetGroup(planets, i);
+	            }
+	            
+	            // Her iterasyon = 1 saat ilerle
+	            planets.forEach(p -> p.advanceTime(1));
+	            
+	            // 1 saniye bekle (simülasyon hızı)
+	            Thread.sleep(2000);
+	            System.out.println("EKRAN TEMİZLENDİ : ");
+	            System.out.println("EKRAN TEMİZLENDİ : ");
+	            System.out.println("EKRAN TEMİZLENDİ : ");
+	            System.out.println("EKRAN TEMİZLENDİ : ");
+	            System.out.println("EKRAN TEMİZLENDİ : ");
+	            System.out.println("EKRAN TEMİZLENDİ : ");
+	            System.out.println("EKRAN TEMİZLENDİ : ");
+	            System.out.println("EKRAN TEMİZLENDİ : ");
+	        }
+	
 		
 	}
+	
+	private static void printPlanetGroup(List<Planet> planets, int startIndex) {
+	    StringBuilder header = new StringBuilder(" Gezegenler : ");
+	    StringBuilder dates = new StringBuilder(" Tarih:      ");
+	    
+	    for (int i = startIndex; i < startIndex + 4 && i < planets.size(); i++) {
+	        Planet p = planets.get(i);
+	        header.append(String.format("%-25s", "---" + p.getName() + "---"));
+	        dates.append(String.format("%-25s", p.getFormattedDate()));
+	    }
+	    
+	    System.out.println(header);
+	    System.out.println(dates);
+	    System.out.println("\n".repeat(2)); // Gruplar arası boşluk
+	}
+	
+
+
+		private static void clearConsole() {
+		    try {
+		        if (System.getProperty("os.name").contains("Windows")) {
+		            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+		        } else {
+		            System.out.print("\033[H\033[2J"); // ANSI escape codes (Linux/Mac)
+		        }
+		    } catch (Exception e) {
+		        System.out.println("\n".repeat(50)); // Fallback temizleme
+		    }
+		}
 
 }
+
