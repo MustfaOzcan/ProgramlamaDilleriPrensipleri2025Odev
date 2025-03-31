@@ -24,23 +24,18 @@ public class Spacecraft {
         this.estimatedArrivalDate = "Hesaplanıyor";
     }
     
-    public void calculateEstimatedArrivalDate(Planet destinationPlanet) {
-        int hoursInDay = destinationPlanet.getHoursInDay();//varis gezegen 
-        int daysToAdd = (int) (distanceInHours / hoursInDay); //eklenecek gün
-        
-        // Varış gezegenindeki tarihi al ve buna gün ekle
-        this.estimatedArrivalDate = destinationPlanet.getDateAfterDays(daysToAdd);
-    }
+ 
     
     public void updateStatus(Planet departurePlanet, Planet destinationPlanet) throws ParseException {
     	
+    	 if (estimatedArrivalDate.equals("Hesaplanıyor")){
+    	        calculateInitialEstimatedArrivalDate(departurePlanet, destinationPlanet);
+    	    }
     	
         // Eğer araç hala beklemede ise ve bulunduğu gezegendeki tarih, çıkış tarihine eşitse
         if (status.equals("Bekliyor") && this.departurePlanet.equals(departurePlanet.getName()) && departurePlanet.isSameDate(departureDate)) {
             status = "Yolda";
-         // Varış zamanını hesapla ve güncelle
-            calculateEstimatedArrivalDate(destinationPlanet);
-            
+      
         }
     }
     
@@ -90,6 +85,20 @@ public class Spacecraft {
         return estimatedArrivalDate;
     }
     
+    // Simülasyon başında tahmini varış tarihini hesaplamak için
+    public void calculateInitialEstimatedArrivalDate(Planet departurePlanet, Planet destinationPlanet) throws ParseException {
+        // TimeCalculation sınıfını kullanarak varış tarihini hesapla
+        String arrivalDate = TimeCalculation.calculateCompleteJourneyDate(
+            departurePlanet.getCurrentDateAsString(),  // Kalkış gezegenindeki mevcut tarih
+            this.departureDate,                        // Uzay aracının kalkış tarihi
+            departurePlanet.getHoursInDay(),           // Kalkış gezegenindeki bir günün kaç saat olduğu
+            this.distanceInHours,                      // İki gezegen arasındaki mesafe
+            destinationPlanet.getCurrentDateAsString(),// Varış gezegenindeki mevcut tarih
+            destinationPlanet.getHoursInDay()          // Varış gezegenindeki bir günün kaç saat olduğu
+        );
+        
+        this.estimatedArrivalDate = arrivalDate;
+    }
     
     
 }
