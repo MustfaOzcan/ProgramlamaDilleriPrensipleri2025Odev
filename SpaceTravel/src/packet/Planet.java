@@ -68,7 +68,7 @@ public class Planet {
                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
     }
     
-    // Belirli saat sonraki tarihi hesaplar
+  /*  // Belirli saat sonraki tarihi hesaplar
     public String getDateAfterHours(int hours) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(currentDate);
@@ -79,5 +79,19 @@ public class Planet {
         calendar.add(Calendar.DAY_OF_MONTH, daysToAdd);
         
         return dateFormat.format(calendar.getTime());
+    }
+*/
+    public String getDateAfterDays(int daysToAdd) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        
+        calendar.add(Calendar.DAY_OF_MONTH, daysToAdd);
+        
+        return dateFormat.format(calendar.getTime());
+    }
+    
+    public String getDateAfterHours(int hours) {
+        int daysToAdd = hours / hoursInDay;
+        return getDateAfterDays(daysToAdd);
     }
 }

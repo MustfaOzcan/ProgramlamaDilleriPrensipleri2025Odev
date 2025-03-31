@@ -17,7 +17,7 @@ public class Simulation {
         while (!allArrived) {
             iteration++;
             
-            // Ekranı temizle (Java'da konsolu temizleme)
+            // Ekranı temizle
             clearScreen();
             
             // Gezegenlerin zamanını ilerlet
@@ -27,9 +27,12 @@ public class Simulation {
             
             // Uzay araçlarının durumunu güncelle
             for (Spacecraft spacecraft : spacecrafts) {
-                // Çıkış gezegenindeki tarih kontrol et
+            	// Çıkış ve varış gezegenlerini al
                 Planet departurePlanet = planets.get(spacecraft.getDeparturePlanet());
-                spacecraft.updateStatus(departurePlanet);
+                Planet destinationPlanet = planets.get(spacecraft.getDestinationPlanet());
+                
+                // Durumu güncelle
+                spacecraft.updateStatus(departurePlanet,destinationPlanet);
                 
                 // Yolculuk süresini güncelle
                 spacecraft.travel(1);
@@ -70,14 +73,18 @@ public class Simulation {
         System.out.println("\n\n");
         
         // Uzay araçları tablosunu yazdır
-        System.out.println("Uzay Aracı\tÇıkış Gezegeni\tVarış Gezegeni\tHedefe Kalan Saat\tDurum");
+        System.out.println("Uzay Aracı\tDurum\tÇıkış Gezegeni\tVarış Gezegeni\tHedefe Kalan Saat\tHedefe Varacağı Tarih");
         for (Spacecraft spacecraft : spacecrafts) {
-            System.out.printf("%-10s\t%-15s\t%-15s\t%-15.2f\t%-10s%n", 
-                   spacecraft.getName(), 
+        	System.out.printf("%-10s\t%-10s\t%-15s\t%-15s\t%-15.2f\t%-20s%n",  
+                   spacecraft.getName(),
+                   spacecraft.getStatus(),
                    spacecraft.getDeparturePlanet(),
                    spacecraft.getDestinationPlanet(),
                    spacecraft.getRemainingHours(),
-                   spacecraft.getStatus());
+                   spacecraft.getEstimatedArrivalDate()
+                  
+                   
+                  );
         }
         System.out.println("---------------------------------------------------------------------");
     }
