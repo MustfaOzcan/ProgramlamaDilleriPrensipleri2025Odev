@@ -7,6 +7,7 @@ public class Planet {
     private String name;
     private int hoursPerDay; // 1 day = X hours
     private LocalDate localDate;
+    private int accumulatedHours = 0;
     private DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     public Planet(String name, int hoursPerDay, String date) {
@@ -15,10 +16,13 @@ public class Planet {
         this.localDate = LocalDate.parse(date, dateFormat);
     }
 
-    // Advance time by X hours (simulation)
+    // Saat ilerletme (1 iterasyon = 1 saat)
     public void advanceTime(int hours) {
-        int days = hours / hoursPerDay;
-        localDate = localDate.plusDays(days);
+        accumulatedHours += hours;
+        int daysToAdd = accumulatedHours / hoursPerDay; // Tam gün sayısı
+        accumulatedHours %= hoursPerDay; // Kalan saatler
+        
+        localDate = localDate.plusDays(daysToAdd);
     }
 
     // Getters

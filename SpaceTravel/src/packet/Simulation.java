@@ -20,8 +20,10 @@ public class Simulation {
 		 	FileReader reader = new FileReader();
 	        List<Planet> planets = reader.readPlanets("Gezegenler.txt");
 	        Scanner scanner = new Scanner(System.in);
-		
+	        int x=1;
 	        while (true) {
+	        		
+	        	
 	            clearConsole(); // Ekranı temizle
 	            
 	            // Gezegenleri 4'lü gruplar halinde göster
@@ -33,27 +35,24 @@ public class Simulation {
 	            planets.forEach(p -> p.advanceTime(1));
 	            
 	            // 1 saniye bekle (simülasyon hızı)
-	            Thread.sleep(2000);
-	            System.out.println("EKRAN TEMİZLENDİ : ");
-	            System.out.println("EKRAN TEMİZLENDİ : ");
-	            System.out.println("EKRAN TEMİZLENDİ : ");
-	            System.out.println("EKRAN TEMİZLENDİ : ");
-	            System.out.println("EKRAN TEMİZLENDİ : ");
-	            System.out.println("EKRAN TEMİZLENDİ : ");
-	            System.out.println("EKRAN TEMİZLENDİ : ");
-	            System.out.println("EKRAN TEMİZLENDİ : ");
+	            Thread.sleep(1000);
+	            
+	            
+	            System.out.println("x : "+x);
+	            x++;
 	        }
 	
 		
 	}
 	
 	private static void printPlanetGroup(List<Planet> planets, int startIndex) {
-	    StringBuilder header = new StringBuilder(" Gezegenler : ");
-	    StringBuilder dates = new StringBuilder(" Tarih:      ");
+		
+	    StringBuilder header = new StringBuilder("Gezegenler : ");
+	    StringBuilder dates = new StringBuilder("Tarih:       ");
 	    
 	    for (int i = startIndex; i < startIndex + 4 && i < planets.size(); i++) {
 	        Planet p = planets.get(i);
-	        header.append(String.format("%-25s", "---" + p.getName() + "---"));
+	        header.append(String.format("%-25s","---" + p.getName() + "---"));
 	        dates.append(String.format("%-25s", p.getFormattedDate()));
 	    }
 	    
