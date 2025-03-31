@@ -57,25 +57,33 @@ public class Simulation {
     private static void displayInformation(int iteration, Map<String, Planet> planets, List<Spacecraft> spacecrafts) {
         // İterasyon bilgisini göster
         System.out.println("iterasyon (saat) : " + iteration);
+      
+        int planetFieldWidth = 16; // Gezegen sütunu genişliği 
+        int dateFieldWidth   = 15;
         
         // Gezegenleri yazdır
-        System.out.print("Gezegenler : ");
+        System.out.print("Gezegenler :\t");
         for (Planet planet : planets.values()) {
-            System.out.print(planet + " ");
+            // Gezegen ismini 3 karakterlik bir alan içinde ortalayıp --- ekliyoruz.
+            String planetName = planet.toString();
+            String formattedPlanet = "" + center(planetName, 3) + "";
+            System.out.printf("%-" + planetFieldWidth + "s", formattedPlanet);
         }
         System.out.println();
         
-        // Gezegenlerin tarihlerini yazdır
-        System.out.print("Tarih: ");
+     // Tarih bilgisini sabit genişlikte sütunlarda yazdırıyoruz
+        System.out.print("Tarih: \t\t");
         for (Planet planet : planets.values()) {
-            System.out.print(planet.getCurrentDateAsString() + " ");
+            String date = planet.getCurrentDateAsString();
+            System.out.printf("%-" + dateFieldWidth + "s", date);
         }
+        
         System.out.println("\n\n");
         
         // Uzay araçları tablosunu yazdır
         System.out.println("Uzay Aracı\tDurum\tÇıkış Gezegeni\tVarış Gezegeni\tHedefe Kalan Saat\tHedefe Varacağı Tarih");
         for (Spacecraft spacecraft : spacecrafts) {
-        	System.out.printf("%-10s\t%-10s\t%-15s\t%-15s\t%-15.2f\t%-20s%n",  
+        	System.out.printf("%-15s\t%-10s\t%-15s\t%-15s\t%-15.1f\t%-20s%n",  
                    spacecraft.getName(),
                    spacecraft.getStatus(),
                    spacecraft.getDeparturePlanet(),
@@ -115,5 +123,18 @@ public class Simulation {
                 System.out.println();
             }
         }
+        
+        
     }
+    
+    public static String center(String s, int width) {
+        if (s == null || s.length() >= width) {
+            return s;
+        }
+        int leftPadding = (width - s.length()) / 2;
+        int rightPadding = width - s.length() - leftPadding;
+        return " ".repeat(leftPadding) + s + " ".repeat(rightPadding);
+    }
+    
+    
 }
