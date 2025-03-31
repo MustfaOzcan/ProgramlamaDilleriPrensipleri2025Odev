@@ -2,104 +2,60 @@ package packet;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FileReader {
     
-    public List<String> readLinesFromResource(String fileName) throws IOException {
-        List<String> lines = new ArrayList<>();
+    public static Map<String, Planet> readPlanets(String filePath) {
+        Map<String, Planet> planets = new HashMap<>();
         
-        InputStream is = getClass().getClassLoader().getResourceAsStream(fileName);
-        if (is == null) {
-            throw new IOException("Dosya bulunamadı! Kontrol edin: " + fileName 
-                + "\nClasspath'te aranan konum: " + getClass().getClassLoader().getResource(fileName));
-        }
-     
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get(filePath))) {
             String line;
-            while ((line = br.readLine()) != null) {
-                lines.add(line);
-            }
-        } catch (IOException e) {
-            throw new IOException("Dosya okunurken hata oluştu: " + e.getMessage(), e);
-        }
-        
-        return lines;
-    }
-    
-    
-    public List<Planet> readPlanets(String fileName) throws IOException {
-        List<Planet> planets = new ArrayList<>();
-        
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream(fileName);
-             BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
-            
-            if (is == null) {
-                throw new IOException("Dosya bulunamadı: " + fileName);
-            }
-            
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split("#");
-                if (data.length != 3) {
-                    throw new IOException("Geçersiz dosya formatı: " + line);
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("#");
+                if (parts.length == 3) {
+                    String name = parts[0];
+                    int hoursInDay = Integer.parseInt(parts[1]);
+                    String date = parts[2];
+                    
+                    planets.put(name, new Planet(name, hoursInDay, date));
                 }
-                
-                String name = data[0].trim();
-                int hours = Integer.parseInt(data[1].trim());
-                String date = data[2].trim();
-                
-                planets.add(new Planet(name, hours, date));
             }
+        } catch (IOException | ParseException e) {
+            System.err.println("Gezegen dosyası okunurken hata oluştu: " + e.getMessage());
         }
         
         return planets;
     }
     
- 
-    public List<Spacecraft> readSpacecrafts(String fileName, List<Planet> planets) throws IOException {
+    public static List<Spacecraft> readSpacecrafts(String filePath) {
         List<Spacecraft> spacecrafts = new ArrayList<>();
         
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream(fileName);
-             BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
-            
-            if (is == null) throw new IOException("Dosya bulunamadı: " + fileName);
-            
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get(filePath))) {
             String line;
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split("#");
-                if (data.length != 5) throw new IOException("Geçersiz format: " + line);
-                
-                // Dosyadaki veriler:
-                // [0] = Uzay aracı ismi
-                // [1] = Çıkış gezegeni ismi
-                // [2] = Varış gezegeni ismi
-                // [3] = Kalkış tarihi (dd.MM.yyyy)
-                // [4] = Seyahat saati (double)
-                String name = data[0].trim();
-                String depName = data[1].trim();
-                String destName = data[2].trim();
-                String departureDate = data[3].trim();
-                double travelHours = Double.parseDouble(data[4].trim());
-                
-                // Çıkış ve varış gezegenlerini gezegenler listesinden buluyoruz.
-                Planet departure = planets.stream()
-                    .filter(p -> p.getName().equals(depName))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("Gezegen bulunamadı: " + depName));
-                Planet destination = planets.stream()
-                    .filter(p -> p.getName().equals(destName))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("Gezegen bulunamadı: " + destName));
-                
-                spacecrafts.add(new Spacecraft(name, departure, destination, departureDate, travelHours));
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("#");
+                if (parts.length == 5) {
+                    String name = parts[0];
+                    String departurePlanet = parts[1];
+                    String destinationPlanet = parts[2];
+                    String departureDate = parts[3];
+                    double distanceInHours = Double.parseDouble(parts[4]);
+                    
+                    spacecrafts.add(new Spacecraft(name, departurePlanet, destinationPlanet, 
+                                                   departureDate, distanceInHours));
+                }
             }
+        } catch (IOException e) {
+            System.err.println("Uzay araçları dosyası okunurken hata oluştu: " + e.getMessage());
         }
         
         return spacecrafts;
     }
-    
 }

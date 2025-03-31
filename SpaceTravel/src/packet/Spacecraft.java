@@ -1,58 +1,79 @@
 package packet;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.text.ParseException;
 
 public class Spacecraft {
     private String name;
-    private Planet departurePlanet; // 
-    private Planet destinationPlanet; // 
-    private LocalDate departureDate;
-    private double travelHours;
+    private String departurePlanet;
+    private String destinationPlanet;
+    private String departureDate;
+    private double distanceInHours;
     private double remainingHours;
-    private boolean hasDeparted = false; // Kalkış yapıldı mı?
+    private String status;
     
-
-    public Spacecraft(String name, Planet departurePlanet, Planet destinationPlanet, 
-            String departureDate, double travelHours) {
-		this.name = name;
-		this.departurePlanet = departurePlanet;
-		this.destinationPlanet = destinationPlanet;
-		this.departureDate = LocalDate.parse(departureDate, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-		this.travelHours = travelHours;
-		this.remainingHours = travelHours;
+    public Spacecraft(String name, String departurePlanet, String destinationPlanet, 
+                      String departureDate, double distanceInHours) {
+        this.name = name;
+        this.departurePlanet = departurePlanet;
+        this.destinationPlanet = destinationPlanet;
+        this.departureDate = departureDate;
+        this.distanceInHours = distanceInHours;
+        this.remainingHours = distanceInHours;
+        this.status = "Beklemede";
     }
     
-    // Hareket etme fonksiyonu (her iterasyonda çağrılır)
-    public void move() {
-        if (hasDeparted) return; // Zaten hareket ettiyse çık
-
-        // Kalkış tarihi kontrolü: çıkış gezegeninin güncel tarihi ile uzay aracının kalkış tarihi eşit mi?
-        if (departurePlanet.getLocalDate().isEqual(departureDate)) {
-            System.out.printf("[%s] %s gezegeninden %s gezegenine hareket ediyor!\n",
-                              name, departurePlanet.getName(), destinationPlanet.getName());
-            hasDeparted = true;
+    public void updateStatus(Planet planet) throws ParseException {
+        // Eğer araç hala beklemede ise ve bulunduğu gezegendeki tarih, çıkış tarihine eşitse
+        if (status.equals("Beklemede") && departurePlanet.equals(planet.getName()) && planet.isSameDate(departureDate)) {
+            status = "Yolda";
         }
     }
     
- // Varış tarihini hesapla (varış gezegeninin saat/gün bilgisi kullanılarak)
-    public LocalDate calculateArrivalDate() {
-        double daysNeeded = remainingHours / destinationPlanet.getHoursPerDay();
-        return departureDate.plusDays((long) daysNeeded);
+    public void travel(int hours) {
+        if (status.equals("Yolda")) {
+            remainingHours -= hours;
+            if (remainingHours <= 0) {
+                remainingHours = 0;
+                status = "Varış";
+            }
+        }
     }
-
     
-
-    // Getter
-    public String getName() { return name; }
-    public boolean hasDeparted() {return hasDeparted;}
-    public Planet getDeparturePlanet() { return departurePlanet;}
-    public Planet getDestinationPlanet() {return destinationPlanet;}
-    public double getTravelHours() {return travelHours; }
-    //Setter
-    public void setDeparturePlanet(Planet planet) {
-        this.departurePlanet = planet;
+    public String getName() {
+        return name;
     }
-   
+    
+    public String getDeparturePlanet() {
+        return departurePlanet;
+    }
+    
+    public String getDestinationPlanet() {
+        return destinationPlanet;
+    }
+    
+    public String getDepartureDate() {
+        return departureDate;
+    }
+    
+    public double getDistanceInHours() {
+        return distanceInHours;
+    }
+    
+    public double getRemainingHours() {
+        return remainingHours;
+    }
+    
+    public String getStatus() {
+        return status;
+    }
+    
+    public boolean hasArrived() {
+        return status.equals("Varış");
+    }
+    
+    // Verilen gezegene göre varış tarihini hesapla
+    public String calculateArrivalDate(Planet destinationPlanetObj) {
+        int hoursInDay = destinationPlanetObj.getHoursInDay();
+        return destinationPlanetObj.getDateAfterHours((int)distanceInHours);
+    }
 }
