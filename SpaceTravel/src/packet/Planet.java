@@ -1,38 +1,83 @@
 package packet;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Planet {
     private String name;
-    private int hoursPerDay; // 1 day = X hours
-    private LocalDate localDate;
-    private int accumulatedHours = 0;
-    private DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-
-    public Planet(String name, int hoursPerDay, String date) {
+    private int hoursInDay;
+    private Date currentDate;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+    private int accumulatedHours = 0; // Biriken saatler
+    
+    public Planet(String name, int hoursInDay, String startDate) throws ParseException {
         this.name = name;
-        this.hoursPerDay = hoursPerDay;
-        this.localDate = LocalDate.parse(date, dateFormat);
+        this.hoursInDay = hoursInDay;
+        this.currentDate = dateFormat.parse(startDate);
     }
-
-    // Saat ilerletme (1 iterasyon = 1 saat)
+    
     public void advanceTime(int hours) {
         accumulatedHours += hours;
-        int daysToAdd = accumulatedHours / hoursPerDay; // Tam gün sayısı
-        accumulatedHours %= hoursPerDay; // Kalan saatler
+        int daysToAdd = accumulatedHours / hoursInDay; // Tam gün sayısı
+        accumulatedHours %= hoursInDay; // Kalan saatler
         
-        localDate = localDate.plusDays(daysToAdd);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        
+        // Günleri ekle
+        if (daysToAdd > 0) {
+            calendar.add(Calendar.DAY_OF_MONTH, daysToAdd);
+        }
+        
+        currentDate = calendar.getTime();
     }
-
-    // Getters
-    public String getName() { return name; }
-    public LocalDate getLocalDate() { return localDate; }
-    public String getFormattedDate() { return localDate.format(dateFormat); }
-    public int getHoursPerDay() { return hoursPerDay; }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public int getHoursInDay() {
+        return hoursInDay;
+    }
+    
+    public Date getCurrentDate() {
+        return currentDate;
+    }
+    
+    public String getCurrentDateAsString() {
+        return dateFormat.format(currentDate);
+    }
     
     @Override
     public String toString() {
-        return String.format("%-15s | Tarih: %s", name, getFormattedDate());
+        return "---" + name + "---";
+    }
+    
+    // İki tarihin aynı olup olmadığını kontrol eder
+    public boolean isSameDate(String otherDate) throws ParseException {
+        Date date = dateFormat.parse(otherDate);
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(currentDate);
+        cal2.setTime(date);
+        
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+               cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
+               cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
+    }
+    
+    // Belirli saat sonraki tarihi hesaplar
+    public String getDateAfterHours(int hours) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        
+        int totalHours = hours;
+        int daysToAdd = totalHours / hoursInDay;
+        
+        calendar.add(Calendar.DAY_OF_MONTH, daysToAdd);
+        
+        return dateFormat.format(calendar.getTime());
     }
 }

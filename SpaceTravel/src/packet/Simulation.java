@@ -1,95 +1,112 @@
-
-/** 
-* 
-* @author Mustafa Özcan ~ mustafa.ozcan8@ogr.sakarya.edu.tr 
-* @since 30.03.2025
-* <p> 
-*  Main Class
-* </p> 
-*/
 package packet;
 
-import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
 
 public class Simulation {
-
-	public static void main(String[] args) throws IOException, InterruptedException {
-
-		FileReader reader = new FileReader();
-		List<Planet> planets = reader.readPlanets("Gezegenler.txt");
-		List<Spacecraft> spacecrafts = reader.readSpacecrafts("Araclar.txt", planets);
-		
-		
-		int x = 1;
-		while (true) {
-
-			clearConsole(); 
-
-			// Gezegenleri 4'lü gruplar halinde göster
-			for (int i = 0; i < planets.size(); i += 4) {
-				printPlanetGroup(planets, i);
-			}
-			// Uzay Araçlarını Yazdır
-			printSpacecraftTable(spacecrafts);
-			// Uzay araçlarını hareket ettir (EKLENDİ)
-			spacecrafts.forEach(Spacecraft::move);
-			// Her iterasyon = 1 saat ilerle
-			planets.forEach(p -> p.advanceTime(1));
-
-			// 1 saniye bekle (simülasyon hızı)
-			Thread.sleep(1000);
-
-			System.out.println("x : " + x);
-			x++;
-		}
-
-	}
-
-	private static void printPlanetGroup(List<Planet> planets, int startIndex) {
-
-		StringBuilder header = new StringBuilder("Gezegenler : ");
-		StringBuilder dates = new StringBuilder("Tarih:       ");
-
-		for (int i = startIndex; i < startIndex + 4 && i < planets.size(); i++) {
-			Planet p = planets.get(i);
-			header.append(String.format("%-25s", "---" + p.getName() + "---"));
-			dates.append(String.format("%-25s", p.getFormattedDate()));
-		}
-
-		System.out.println(header);
-		System.out.println(dates);
-		System.out.println("\n".repeat(2)); // Gruplar arası boşluk
-	}
-
-	private static void clearConsole() {
-		try {
-			if (System.getProperty("os.name").contains("Windows")) {
-				new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-			} else {
-				System.out.print("\033[H\033[2J"); // ANSI escape codes (Linux/Mac)
-			}
-		} catch (Exception e) {
-			System.out.println("\n".repeat(50)); // Fallback temizleme
-		}
-	}
-
-	// Uzay Araçlarını Yazdırma (EKLENDİ)
-	 private static void printSpacecraftTable(List<Spacecraft> spacecrafts) {
-	       
-	        System.out.printf("%-15s %-20s %-20s %-25s %-25s%n", 
-	                          "Uzay Aracı", "Çıkış Gezegeni", "Varış Gezegeni", "Hedefe Kalan Saat", "Durum");
-	        
-	        
-	        for (Spacecraft s : spacecrafts) {
-	            String status = s.hasDeparted() ? "Yolda" : "Beklemede";
-	            System.out.printf("%-15s %-20s %-20s %-25.2f %-25s%n", 
-	                              s.getName(), s.getDeparturePlanet().getName(), s.getDestinationPlanet().getName(), 
-	                              s.getTravelHours(), status);
-	        }
-	        
-	        System.out.println("---------------------------------------------------------------------\n");
-	    }
-
+    
+    public static void main(String[] args) throws ParseException, InterruptedException {
+        // Dosyaları oku
+        Map<String, Planet> planets = FileReader.readPlanets("src/resources/Gezegenler.txt");
+        List<Spacecraft> spacecrafts = FileReader.readSpacecrafts("src/resources/Araclar.txt");
+        
+        int iteration = 0;
+        boolean allArrived = false;
+        
+        while (!allArrived) {
+            iteration++;
+            
+            // Ekranı temizle (Java'da konsolu temizleme)
+            clearScreen();
+            
+            // Gezegenlerin zamanını ilerlet
+            for (Planet planet : planets.values()) {
+                planet.advanceTime(1); // Her iterasyonda 1 saat ilerle
+            }
+            
+            // Uzay araçlarının durumunu güncelle
+            for (Spacecraft spacecraft : spacecrafts) {
+                // Çıkış gezegenindeki tarih kontrol et
+                Planet departurePlanet = planets.get(spacecraft.getDeparturePlanet());
+                spacecraft.updateStatus(departurePlanet);
+                
+                // Yolculuk süresini güncelle
+                spacecraft.travel(1);
+            }
+            
+            // Ekrana bilgileri yaz
+            displayInformation(iteration, planets, spacecrafts);
+            
+            // Tüm araçlar hedeflerine ulaştı mı kontrol et
+            allArrived = checkAllArrived(spacecrafts);
+            
+            // Simülasyonun hızını ayarla (1 saniye bekle)
+            Thread.sleep(1000);
+        }
+        
+        // Program bitiminde son durumu göster
+        clearScreen();
+        displayInformation(iteration, planets, spacecrafts);
+        System.out.println("\nSimülasyon tamamlandı. Tüm uzay araçları hedeflerine ulaştı.");
+    }
+    
+    private static void displayInformation(int iteration, Map<String, Planet> planets, List<Spacecraft> spacecrafts) {
+        // İterasyon bilgisini göster
+        System.out.println("iterasyon (saat) : " + iteration);
+        
+        // Gezegenleri yazdır
+        System.out.print("Gezegenler : ");
+        for (Planet planet : planets.values()) {
+            System.out.print(planet + " ");
+        }
+        System.out.println();
+        
+        // Gezegenlerin tarihlerini yazdır
+        System.out.print("Tarih: ");
+        for (Planet planet : planets.values()) {
+            System.out.print(planet.getCurrentDateAsString() + " ");
+        }
+        System.out.println("\n\n");
+        
+        // Uzay araçları tablosunu yazdır
+        System.out.println("Uzay Aracı\tÇıkış Gezegeni\tVarış Gezegeni\tHedefe Kalan Saat\tDurum");
+        for (Spacecraft spacecraft : spacecrafts) {
+            System.out.printf("%-10s\t%-15s\t%-15s\t%-15.2f\t%-10s%n", 
+                   spacecraft.getName(), 
+                   spacecraft.getDeparturePlanet(),
+                   spacecraft.getDestinationPlanet(),
+                   spacecraft.getRemainingHours(),
+                   spacecraft.getStatus());
+        }
+        System.out.println("---------------------------------------------------------------------");
+    }
+    
+    private static boolean checkAllArrived(List<Spacecraft> spacecrafts) {
+        for (Spacecraft spacecraft : spacecrafts) {
+            if (!spacecraft.hasArrived()) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private static void clearScreen() {
+        try {
+            // Windows için
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            }
+            // Unix/Linux/MacOS için
+            else {
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
+            }
+        } catch (Exception e) {
+            // Ekran temizleme başarısız olursa, boş satırlar ile temizle
+            for (int i = 0; i < 50; i++) {
+                System.out.println();
+            }
+        }
+    }
 }
