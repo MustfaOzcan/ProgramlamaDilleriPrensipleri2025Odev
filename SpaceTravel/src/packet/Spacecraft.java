@@ -10,6 +10,7 @@ public class Spacecraft {
     private double distanceInHours;
     private double remainingHours;
     private String status;
+    private String estimatedArrivalDate;
     
     public Spacecraft(String name, String departurePlanet, String destinationPlanet, 
                       String departureDate, double distanceInHours) {
@@ -19,13 +20,27 @@ public class Spacecraft {
         this.departureDate = departureDate;
         this.distanceInHours = distanceInHours;
         this.remainingHours = distanceInHours;
-        this.status = "Beklemede";
+        this.status = "Bekliyor";
+        this.estimatedArrivalDate = "Hesaplanıyor";
     }
     
-    public void updateStatus(Planet planet) throws ParseException {
+    public void calculateEstimatedArrivalDate(Planet destinationPlanet) {
+        int hoursInDay = destinationPlanet.getHoursInDay();//varis gezegen 
+        int daysToAdd = (int) (distanceInHours / hoursInDay); //eklenecek gün
+        
+        // Varış gezegenindeki tarihi al ve buna gün ekle
+        this.estimatedArrivalDate = destinationPlanet.getDateAfterDays(daysToAdd);
+    }
+    
+    public void updateStatus(Planet departurePlanet, Planet destinationPlanet) throws ParseException {
+    	
+    	
         // Eğer araç hala beklemede ise ve bulunduğu gezegendeki tarih, çıkış tarihine eşitse
-        if (status.equals("Beklemede") && departurePlanet.equals(planet.getName()) && planet.isSameDate(departureDate)) {
+        if (status.equals("Bekliyor") && this.departurePlanet.equals(departurePlanet.getName()) && departurePlanet.isSameDate(departureDate)) {
             status = "Yolda";
+         // Varış zamanını hesapla ve güncelle
+            calculateEstimatedArrivalDate(destinationPlanet);
+            
         }
     }
     
@@ -34,7 +49,7 @@ public class Spacecraft {
             remainingHours -= hours;
             if (remainingHours <= 0) {
                 remainingHours = 0;
-                status = "Varış";
+                status = "Vardı";
             }
         }
     }
@@ -71,9 +86,10 @@ public class Spacecraft {
         return status.equals("Varış");
     }
     
-    // Verilen gezegene göre varış tarihini hesapla
-    public String calculateArrivalDate(Planet destinationPlanetObj) {
-        int hoursInDay = destinationPlanetObj.getHoursInDay();
-        return destinationPlanetObj.getDateAfterHours((int)distanceInHours);
+    public String getEstimatedArrivalDate() {
+        return estimatedArrivalDate;
     }
+    
+    
+    
 }
