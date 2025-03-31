@@ -59,5 +59,47 @@ public class FileReader {
         return planets;
     }
     
+ 
+    public List<Spacecraft> readSpacecrafts(String fileName, List<Planet> planets) throws IOException {
+        List<Spacecraft> spacecrafts = new ArrayList<>();
+        
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream(fileName);
+             BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+            
+            if (is == null) throw new IOException("Dosya bulunamadı: " + fileName);
+            
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split("#");
+                if (data.length != 5) throw new IOException("Geçersiz format: " + line);
+                
+                // Dosyadaki veriler:
+                // [0] = Uzay aracı ismi
+                // [1] = Çıkış gezegeni ismi
+                // [2] = Varış gezegeni ismi
+                // [3] = Kalkış tarihi (dd.MM.yyyy)
+                // [4] = Seyahat saati (double)
+                String name = data[0].trim();
+                String depName = data[1].trim();
+                String destName = data[2].trim();
+                String departureDate = data[3].trim();
+                double travelHours = Double.parseDouble(data[4].trim());
+                
+                // Çıkış ve varış gezegenlerini gezegenler listesinden buluyoruz.
+                Planet departure = planets.stream()
+                    .filter(p -> p.getName().equals(depName))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("Gezegen bulunamadı: " + depName));
+                Planet destination = planets.stream()
+                    .filter(p -> p.getName().equals(destName))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("Gezegen bulunamadı: " + destName));
+                
+                spacecrafts.add(new Spacecraft(name, departure, destination, departureDate, travelHours));
+            }
+        }
+        
+        return spacecrafts;
+    }
     
 }
