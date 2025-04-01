@@ -1,3 +1,11 @@
+/** 
+* 
+* @author mustafa ozcan ve mustafa.ozcan8@ogr.sakarya.edu.tr 
+* @since 01.04.2025
+* <p> 
+*  Main Class diğer sınıfları burada kullanıyoruz.
+* </p> 
+*/ 
 package packet;
 
 import java.text.ParseException;
@@ -60,7 +68,7 @@ public class Simulation {
         }
         
         // Program bitiminde son durumu göster
-        clearScreen();
+        //clearScreen();
         displayInformation(iteration, planets, spacecrafts, people);
         System.out.println("\nSimülasyon tamamlandı. Tüm uzay araçları hedeflerine ulaştı.");
     }
@@ -100,7 +108,7 @@ public class Simulation {
         
         // Uzay araçları tablosunu yazdır
         System.out.println("Uzay Araçlari:");
-        System.out.println("Araç Adı\tDurum\t\tÇıkış\t\tVarış\t\tHedefe Kalan Saat\tHedefe Varacağı Tarih\tCrew");
+        System.out.println("Araç Adı\tDurum\t\tÇıkış\t\tVarış\t\tHedefe Kalan Saat\tHedefe Varacağı Tarih");
         for (Spacecraft spacecraft : spacecrafts) {
         	System.out.printf("%-15s\t%-10s\t%-15s\t%-15s\t%-25.0f\t%-50s%n",  
                    spacecraft.getName(),
@@ -115,6 +123,8 @@ public class Simulation {
                   );
         }
         
+        /* NOT  : BURADA YOLCU BİLGİLERİNİ YAZDIRIYORUZ ÖDEVDE İSTENMİYOR ANCAK MANTIĞINI ANLAMAK İÇİN BAKILABİLİR
+        
         System.out.println("\n\nYolcular:");
         System.out.println("İsim\t\tYaş\tKalan Ömür (saat)\tUzay Aracı\tDurum");
         for (Person person : people) {
@@ -126,10 +136,11 @@ public class Simulation {
                    person.isAlive() ? "Yaşıyor" : "Ölü"
                   );
         }
+        
+        
+        */
     }
     
-    
-
 	private static int calculatePlanetPopulation(String planetName, List<Spacecraft> spacecrafts, List<Person> people) {
 		int population = 0;
 		for (Person person : people) {
@@ -153,7 +164,6 @@ public class Simulation {
 		
 	}
 	
-
 	private static int countCrewMembers(String spacecraftName, List<Person> people) {
         int count = 0;
         for (Person person : people) {
@@ -193,6 +203,8 @@ public class Simulation {
                 System.out.print("\033[H\033[2J");
                 System.out.flush();
             }
+            // Ekranın temizlenmesi için kısa bir bekleme
+            Thread.sleep(1000);
         } catch (Exception e) {
             // Ekran temizleme başarısız olursa, boş satırlar ile temizle
             for (int i = 0; i < 50; i++) {

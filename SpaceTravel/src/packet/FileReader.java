@@ -1,5 +1,12 @@
+/** 
+* 
+* @author mustafa ozcan ve mustafa.ozcan8@ogr.sakarya.edu.tr 
+* @since 01.04.2025
+* <p> 
+*  Dosya Okuma Sınıfı 
+* </p> 
+*/ 
 package packet;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;

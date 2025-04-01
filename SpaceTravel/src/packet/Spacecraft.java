@@ -1,3 +1,11 @@
+/** 
+* 
+* @author mustafa ozcan ve mustafa.ozcan8@ogr.sakarya.edu.tr 
+* @since 01.04.2025
+* <p> 
+*  Uzay Aracı
+* </p> 
+*/ 
 package packet;
 
 import java.text.ParseException;

@@ -1,3 +1,11 @@
+/** 
+* 
+* @author mustafa ozcan ve mustafa.ozcan8@ogr.sakarya.edu.tr 
+* @since 01.04.2025
+* <p> 
+* 	Kisi Nesnesi
+* </p> 
+*/ 
 package packet;
 
 public class Person {

@@ -1,3 +1,12 @@
+/** 
+* 
+* @author mustafa ozcan ve mustafa.ozcan8@ogr.sakarya.edu.tr 
+* @since 01.04.2025
+* <p> 
+* 	Uzay aracı X gezegeninden Y gezenine gittiği varsaydığımızda bu sınıfta
+* 	uzay aracının Y gezegenine göre "Hedefe Varış Tarihi"  hesaplama işlemleri .
+* </p> 
+*/ 
 package packet;
 
 import java.text.ParseException;
