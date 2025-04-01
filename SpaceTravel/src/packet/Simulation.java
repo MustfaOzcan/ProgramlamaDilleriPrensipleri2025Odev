@@ -56,6 +56,7 @@ public class Simulation {
     
     private static void displayInformation(int iteration, Map<String, Planet> planets, List<Spacecraft> spacecrafts) {
         // İterasyon bilgisini göster
+    	System.out.println("-------------------------------------");
         System.out.println("iterasyon (saat) : " + iteration);
       
         int planetFieldWidth = 16; // Gezegen sütunu genişliği 
@@ -71,7 +72,7 @@ public class Simulation {
         }
         System.out.println();
         
-     // Tarih bilgisini sabit genişlikte sütunlarda yazdırıyoruz
+        // Tarih bilgisi
         System.out.print("Tarih: \t\t");
         for (Planet planet : planets.values()) {
             String date = planet.getCurrentDateAsString();
@@ -81,9 +82,10 @@ public class Simulation {
         System.out.println("\n\n");
         
         // Uzay araçları tablosunu yazdır
-        System.out.println("Uzay Aracı\tDurum\tÇıkış Gezegeni\tVarış Gezegeni\tHedefe Kalan Saat\tHedefe Varacağı Tarih");
+        System.out.println("Uzay Araçlari:");
+        System.out.println("Araç Adı\tDurum\t\tÇıkış\t\tVarış\t\tHedefe Kalan Saat\tHedefe Varacağı Tarih");
         for (Spacecraft spacecraft : spacecrafts) {
-        	System.out.printf("%-15s\t%-10s\t%-15s\t%-15s\t%-15.1f\t%-20s%n",  
+        	System.out.printf("%-15s\t%-10s\t%-15s\t%-15s\t%-25.0f\t%-50s%n",  
                    spacecraft.getName(),
                    spacecraft.getStatus(),
                    spacecraft.getDeparturePlanet(),
@@ -94,7 +96,7 @@ public class Simulation {
                    
                   );
         }
-        System.out.println("---------------------------------------------------------------------");
+       
     }
     
     private static boolean checkAllArrived(List<Spacecraft> spacecrafts) {

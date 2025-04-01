@@ -4,54 +4,36 @@ public class Person {
 	
     private String name;
     private int age;
-    private double remainingLifeHours; // Saat cinsinden
-    private String spacecraft; // Bulunduğu uzay aracı
+    private int remainingLifespan; // in hours
+    private String spacecraft; //
+    private boolean isAlive;
 
     // Constructor
-    public Person(String name, int age, double remainingLifeHours, String spacecraft) {
+    public Person(String name, int age, int remainingLifespan, String spacecraft) {
         this.name = name;
         this.age = age;
-        this.remainingLifeHours = remainingLifeHours;
+        this.remainingLifespan = remainingLifespan;
         this.spacecraft = spacecraft;
+        this.isAlive=true;
+    }
+    
+    public void passTime(int hours) {
+        if (isAlive) {
+            remainingLifespan -= hours;
+            if (remainingLifespan <= 0) {
+                isAlive = false;
+                remainingLifespan = 0;
+            }
+        }
     }
 
-    // Getter and Setter 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public double getRemainingLifeHours() {
-        return remainingLifeHours;
-    }
-
-    public void setRemainingLifeHours(double remainingLifeHours) {
-        this.remainingLifeHours = remainingLifeHours;
-    }
-
-    public String getSpacecraft() {
-        return spacecraft;
-    }
-
-    public void setSpacecraft(String spacecraft) {
-        this.spacecraft = spacecraft;
-    }
-
-    @Override
-    public String toString() {
-        return String.format(
-            name, age, remainingLifeHours, spacecraft
-        );
-    }
+    // Getter  
+    public String getName() { return name;}
+    public int getAge() {return age;}
+    public int getRemainingLifespan() {return remainingLifespan;}
+    public String getSpacecraftName() {return spacecraft;}
+    public boolean isAlive() {return isAlive;}
+  
+    
+  
 }
