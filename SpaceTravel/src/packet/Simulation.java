@@ -16,9 +16,10 @@ public class Simulation {
     
     public static void main(String[] args) throws ParseException, InterruptedException {
         // Dosyaları oku
-        Map<String, Planet> planets = FileReader.readPlanets("src/resources/Gezegenler.txt");
-        List<Spacecraft> spacecrafts = FileReader.readSpacecrafts("src/resources/Araclar.txt");
-        List<Person> people = FileReader.readPeople("src/resources/Kisiler.txt");
+        Map<String, Planet> planets = FileReader.readPlanets("dist/Gezegenler.txt");
+        List<Spacecraft> spacecrafts = FileReader.readSpacecrafts("dist/Araclar.txt");
+        List<Person> people = FileReader.readPeople("dist/Kisiler.txt");
+        System.out.println("dosyalar okundu.");
         
         int iteration = 0;
         boolean allArrived = false;
@@ -202,7 +203,7 @@ public class Simulation {
                 System.out.flush();
             }
             // Ekranın temizlenmesi için kısa bir bekleme
-            Thread.sleep(1000);
+            //Thread.sleep(1000);
         } catch (Exception e) {
             // Ekran temizleme başarısız olursa, boş satırlar ile temizle
             for (int i = 0; i < 50; i++) {
