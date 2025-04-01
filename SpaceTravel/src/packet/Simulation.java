@@ -110,17 +110,15 @@ public class Simulation {
         System.out.println("Uzay Araçlari:");
         System.out.println("Araç Adı\tDurum\t\tÇıkış\t\tVarış\t\tHedefe Kalan Saat\tHedefe Varacağı Tarih");
         for (Spacecraft spacecraft : spacecrafts) {
-        	System.out.printf("%-15s\t%-10s\t%-15s\t%-15s\t%-25.0f\t%-50s%n",  
-                   spacecraft.getName(),
-                   spacecraft.getStatus(),
-                   spacecraft.getDeparturePlanet(),
-                   spacecraft.getDestinationPlanet(),
-                   spacecraft.getRemainingHours(),
-                   spacecraft.getEstimatedArrivalDate(),
-                   countCrewMembers(spacecraft.getName(), people)
-                  
-                   
-                  );
+        	System.out.printf("%-15s\t%-10s\t%-15s\t%-15s\t%-25s\t%-50s%n",  
+        		       spacecraft.getName(),
+        		       spacecraft.getStatus(),
+        		       spacecraft.getDeparturePlanet(),
+        		       spacecraft.getDestinationPlanet(),
+        		       spacecraft.isDestroyed() ? "--" : String.format("%.0f", spacecraft.getRemainingHours()),
+        		       spacecraft.isDestroyed() ? "--" : spacecraft.getEstimatedArrivalDate(),
+        		       countCrewMembers(spacecraft.getName(), people)
+        		      );
         }
         
         /* NOT  : BURADA YOLCU BİLGİLERİNİ YAZDIRIYORUZ ÖDEVDE İSTENMİYOR ANCAK MANTIĞINI ANLAMAK İÇİN BAKILABİLİR
