@@ -58,4 +58,28 @@ public class FileReader {
         
         return spacecrafts;
     }
+    
+    public static List<Person> readPeople(String filePath) {
+        List<Person> people = new ArrayList<>();
+        
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("#");
+                if (parts.length == 4) {
+                    String name = parts[0];
+                    int age = Integer.parseInt(parts[1]);
+                    int remainingLifespan = Integer.parseInt(parts[2]);
+                    String spacecraftName = parts[3];
+                    
+                    people.add(new Person(name, age, remainingLifespan, spacecraftName));
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Kişiler dosyası okunurken hata oluştu: " + e.getMessage());
+        }
+        
+        return people;
+    }
+    
 }
